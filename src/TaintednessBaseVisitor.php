@@ -738,6 +738,8 @@ trait TaintednessBaseVisitor {
 			case 'void':
 			case 'class-string':
 			case 'callable-string':
+			case 'callable-object':
+			case 'callable-array':
 				$taint = $this->mergeAddTaint( $taint, SecurityCheckPlugin::NO_TAINT );
 				break;
 			case 'string':
@@ -753,7 +755,7 @@ trait TaintednessBaseVisitor {
 			default:
 				// This means specific class.
 				// TODO - maybe look up __toString() method.
-				$fqsen = $type->asFQSEN();
+				$fqsen = $type->isObjectWithKnownFQSEN() ? $type->asFQSEN() : $type->__toString();
 				if ( !( $fqsen instanceof FullyQualifiedClassName ) ) {
 					$this->debug( __METHOD__, " $type not a class?" );
 					$taint = $this->mergeAddTaint( $taint, SecurityCheckPlugin::UNKNOWN_TAINT );
