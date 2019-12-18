@@ -4,6 +4,7 @@ use ast\Node;
 use Phan\CodeBase;
 use Phan\Language\Context;
 use Phan\Language\Element\PassByReferenceVariable;
+use Phan\Language\Element\Variable;
 use Phan\PluginV2\PluginAwarePreAnalysisVisitor;
 
 /**
@@ -144,7 +145,9 @@ class PreTaintednessVisitor extends PluginAwarePreAnalysisVisitor {
 
 			// Initially, the variable starts off with no taint.
 			$this->setTaintedness( $varObj, SecurityCheckPlugin::NO_TAINT );
-			$this->linkParamAndFunc( $varObj, $method, $i );
+			if ($varObj instanceof Variable) {  // TODO: Should linkParamAndFunc handle Phan\Language\Element\Property?
+				$this->linkParamAndFunc( $varObj, $method, $i );
+			}
 		}
 	}
 }
